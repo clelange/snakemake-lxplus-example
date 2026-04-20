@@ -52,16 +52,14 @@ tasks, the pixi task definition masks HTCondor configuration during Snakemake
 startup so that the installed HTCondor executor plugin does not try to resolve a
 CERN schedd when you are just running the local example.
 
-For CERN, one extra step is still needed on top of the upstream executor:
-
-- The submitter Kerberos credential has to be staged in the schedd before
-  submission. The `lxbatch-example` task does this via
-  `workflow/lxbatch/prepare_kerberos.py`.
-
 The trivial shared-filesystem demonstrator has been verified to submit, run, and
 complete successfully with the native `snakemake-executor-plugin-htcondor`.
 That means the old cookiecutter profile machinery and `cluster-generic` submit/
 status scripts are no longer needed for this example.
+
+On lxplus, this demonstrator has also been verified to work without any
+additional pre-submission Kerberos staging helper. In other words, for these
+examples, the native executor is sufficient as-is.
 
 This rule writes `local_hello.txt` in the workflow directory via a batch job.
 To force a fresh submission, run

@@ -13,19 +13,16 @@ rm -rf results \
 """
 
 lxbatch-example = """
-python workflow/lxbatch/prepare_kerberos.py \
-&& XDG_CACHE_HOME=$PWD/.cache snakemake --workflow-profile lxbatch --snakefile workflow/Snakefile --verbose --cores 1 --printshellcmds hello_lxbatch
+XDG_CACHE_HOME=$PWD/.cache snakemake --workflow-profile lxbatch --snakefile workflow/Snakefile --verbose --cores 1 --printshellcmds hello_lxbatch
 """
 
 lxbatch-eos-example = """
-python workflow/lxbatch/prepare_kerberos.py \
-&& python -c "import os,sys; eos=os.environ.get('EOS_DIR'); sys.exit(0 if eos else 'Set EOS_DIR to an EOS output directory, e.g. /eos/user/c/clange/snakemake-lxplus-example')" \
+python -c "import os,sys; eos=os.environ.get('EOS_DIR'); sys.exit(0 if eos else 'Set EOS_DIR to an EOS output directory, e.g. /eos/user/c/clange/snakemake-lxplus-example')" \
 && XDG_CACHE_HOME=$PWD/.cache snakemake --workflow-profile lxbatch --config eos_dir="$EOS_DIR" --snakefile workflow/Snakefile --verbose --cores 1 --printshellcmds hello_eos
 """
 
 lxbatch-eos-read-example = """
-python workflow/lxbatch/prepare_kerberos.py \
-&& python -c "import os,sys; eos=os.environ.get('EOS_DIR'); sys.exit(0 if eos else 'Set EOS_DIR to an EOS directory containing hello_from_htcondor.txt, e.g. /eos/user/c/clange/snakemake-lxplus-example')" \
+python -c "import os,sys; eos=os.environ.get('EOS_DIR'); sys.exit(0 if eos else 'Set EOS_DIR to an EOS directory containing hello_from_htcondor.txt, e.g. /eos/user/c/clange/snakemake-lxplus-example')" \
 && XDG_CACHE_HOME=$PWD/.cache snakemake --workflow-profile lxbatch --config eos_dir="$EOS_DIR" --snakefile workflow/Snakefile --verbose --cores 1 --printshellcmds read_eos
 """
 
