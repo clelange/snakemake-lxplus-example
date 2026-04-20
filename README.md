@@ -42,9 +42,9 @@ and then restart shell or
 pixi run example
 ```
 
-If you haven't installed the environment yet, `pixi` will run the equivalent of `pixi install` before executing your `pixi run` command.
-
-This runs a simple local rule that sorts `data/numbers.txt` into `results/sorted_numbers_script.txt`.
+If the environment is not installed yet, `pixi` will run the equivalent of
+`pixi install` first. This example sorts `data/numbers.txt` into
+`results/sorted_numbers_script.txt`.
 
 ### Optional apptainer example
 
@@ -55,6 +55,48 @@ pixi run apptainer-example
 This runs the same kind of local workflow, but using the CERN CVMFS container
 `/cvmfs/unpacked.cern.ch/registry.hub.docker.com/library/python:3.11` declared
 in the Snakefile.
+
+## Batching examples
+
+For long-running workflows over many input files, a common pattern is to batch
+multiple samples into one Snakemake job and size the HTCondor resource request
+for that batch. This repository contains two local examples that simulate
+per-sample cost with `sleep`.
+
+The sample metadata lives in `data/batch_samples.tsv`, and the corresponding
+dummy input files live under `data/batch_samples/`.
+
+### Fixed-size batching
+
+```
+pixi run batch-fixed-example
+```
+
+This groups the sample list into fixed-size batches of three files per job. The
+per-batch reports are written under `results/batching/fixed/`, with an overview
+in `results/batching/fixed/summary.txt`.
+
+This is the simplest approach, but it assumes that samples have roughly similar
+cost. In the example data, that assumption is false, so some fixed batches end
+up much heavier than others.
+
+### Cost-aware batching
+
+```
+pixi run batch-balanced-example
+```
+
+This uses the expected per-sample runtime from `data/batch_samples.tsv` to pack
+samples into batches with similar total cost. The per-batch reports are written
+under `results/batching/balanced/`, with an overview in
+`results/batching/balanced/summary.txt`.
+
+This is closer to what you want when some samples are known to be slower than
+others: keep each batch under a target total cost rather than forcing the same
+number of files into every job.
+
+Both batching examples set HTCondor-oriented resources in the Snakefile, so the
+same pattern can be used for lxbatch submissions.
 
 ## HTCondor examples
 
@@ -71,18 +113,26 @@ workflow profile in `workflow/profiles/lxbatch/profile.v9+.yaml`.
 This submits the rule `hello_lxbatch`, which writes `local_hello.txt` in the
 workflow directory via HTCondor.
 
-The lxbatch profile also sets conservative HTCondor defaults for the demo:
+The lxbatch profile sets conservative HTCondor defaults for the demo:
 
 - `htcondor_request_mem_mb=1024`
 - `htcondor_request_disk_mb=1024`
 - `classad_JobFlavour=espresso`
 
 This means the examples request 1 GB memory, 1 GB disk, and the CERN batch
-"espresso" job flavour (20 minutes maximum runtime). See the CERN batch docs on
+`espresso` job flavour (20 minutes maximum runtime). See the CERN batch docs on
 [resources and limits](https://batchdocs.web.cern.ch/local/submit.html#resources-and-limits)
 and [job flavours](https://batchdocs.web.cern.ch/local/submit.html#job-flavours).
-If you want an exact wall-clock limit instead of a flavour bucket, the same
-mechanism can be used with `classad_MaxRuntime`.
+For an exact wall-clock limit instead of a flavour bucket, use
+`classad_MaxRuntime`.
+
+For workflows where each job processes multiple input files, the batch size
+should be chosen so that the worst-case total runtime and memory stay within the
+requested HTCondor limits. The batching examples above illustrate two common
+approaches:
+
+- fixed-size batching when samples have similar cost
+- cost-aware batching when some samples are known to run longer than others
 
 This demonstrator has been verified on lxplus with the native executor plugin,
 without the older cookiecutter profile, `cluster-generic` wrappers, or any

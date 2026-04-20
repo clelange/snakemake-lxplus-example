@@ -30,6 +30,16 @@ apptainer-example = """
 CONDOR_CONFIG=/dev/null _CONDOR_NETWORK_INTERFACE=127.0.0.1 XDG_CACHE_HOME=$PWD/.cache snakemake --cores 1 --printshellcmds --software-deployment-method apptainer --snakefile workflow/Snakefile sort_docker
 """
 
+batch-fixed-example = """
+rm -rf results/batching/fixed \
+&& CONDOR_CONFIG=/dev/null _CONDOR_NETWORK_INTERFACE=127.0.0.1 XDG_CACHE_HOME=$PWD/.cache snakemake --verbose --cores 1 --printshellcmds --snakefile workflow/Snakefile batching_fixed_demo
+"""
+
+batch-balanced-example = """
+rm -rf results/batching/balanced \
+&& CONDOR_CONFIG=/dev/null _CONDOR_NETWORK_INTERFACE=127.0.0.1 XDG_CACHE_HOME=$PWD/.cache snakemake --verbose --cores 1 --printshellcmds --snakefile workflow/Snakefile batching_balanced_demo
+"""
+
 [dependencies]
 python = ">=3.12.9,<3.13"
 snakemake = ">=9,<10"
