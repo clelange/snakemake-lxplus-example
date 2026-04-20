@@ -71,6 +71,19 @@ workflow profile in `workflow/profiles/lxbatch/profile.v9+.yaml`.
 This submits the rule `hello_lxbatch`, which writes `local_hello.txt` in the
 workflow directory via HTCondor.
 
+The lxbatch profile also sets conservative HTCondor defaults for the demo:
+
+- `htcondor_request_mem_mb=1024`
+- `htcondor_request_disk_mb=1024`
+- `classad_JobFlavour=espresso`
+
+This means the examples request 1 GB memory, 1 GB disk, and the CERN batch
+"espresso" job flavour (20 minutes maximum runtime). See the CERN batch docs on
+[resources and limits](https://batchdocs.web.cern.ch/local/submit.html#resources-and-limits)
+and [job flavours](https://batchdocs.web.cern.ch/local/submit.html#job-flavours).
+If you want an exact wall-clock limit instead of a flavour bucket, the same
+mechanism can be used with `classad_MaxRuntime`.
+
 This demonstrator has been verified on lxplus with the native executor plugin,
 without the older cookiecutter profile, `cluster-generic` wrappers, or any
 additional Kerberos staging helper.
