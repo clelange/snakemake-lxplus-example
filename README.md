@@ -52,7 +52,9 @@ This runs a simple local rule that sorts `data/numbers.txt` into `results/sorted
 pixi run apptainer-example
 ```
 
-This runs the same kind of local workflow, but using the `docker://python:3.12` container declared in the Snakefile.
+This runs the same kind of local workflow, but using the CERN CVMFS container
+`/cvmfs/unpacked.cern.ch/registry.hub.docker.com/library/python:3.11` declared
+in the Snakefile.
 
 ## HTCondor examples
 

@@ -49,7 +49,7 @@ rule sort_docker:
     output:
         "results/sorted_numbers_container.txt"
     container:
-        "docker://python:3.12"
+        "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/library/python:3.11"
     script:
         "scripts/sort.sh"
 
