@@ -1,3 +1,23 @@
+from pathlib import Path
+import os
+
+
+def eos_target(name):
+    eos_dir = config.get("eos_dir") or os.environ.get("EOS_DIR")
+    if not eos_dir:
+        raise ValueError(
+            "EOS target requested, but no EOS directory was configured. "
+            "Set --config eos_dir=/eos/... or the EOS_DIR environment variable."
+        )
+    return str(Path(eos_dir) / name)
+
+
+EOS_DIR = config.get("eos_dir") or os.environ.get("EOS_DIR")
+EOS_HELLO_TARGET = str(Path(EOS_DIR) / "hello_from_htcondor.txt") if EOS_DIR else None
+WORKFLOW_ROOT = Path(workflow.basedir).resolve().parent
+LOCAL_EOS_READ_TARGET = str(WORKFLOW_ROOT / "results" / "read_from_eos.txt")
+
+
 rule sort_local:
     input:
         "data/numbers.txt",
@@ -40,3 +60,25 @@ rule hello_lxbatch:
         """
         echo "hello hello $(date)" > {output}
         """
+
+
+if EOS_HELLO_TARGET:
+    rule hello_eos:
+        output:
+            EOS_HELLO_TARGET
+        shell:
+            """
+            mkdir -p "$(dirname {output})"
+            echo "hello from htcondor $(date)" > {output}
+            """
+
+    rule read_eos:
+        input:
+            EOS_HELLO_TARGET
+        output:
+            LOCAL_EOS_READ_TARGET
+        shell:
+            """
+            mkdir -p "$(dirname {output})"
+            cat {input} > {output}
+            """
