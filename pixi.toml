@@ -1,8 +1,6 @@
 [workspace]
 name = "snakemake-lxplus-example"
-version = "0.2.0"
 description = "Snakemake hello world example on LXPLUS and lxbatch"
-authors = ["Matthew Feickert <matthew.feickert@cern.ch>", "Clemens Lange <clemens.lange@cern.ch>"]
 channels = ["conda-forge", "bioconda"]
 platforms = ["linux-64"]
 
@@ -41,7 +39,6 @@ rm -rf results/batching/balanced \
 """
 
 [dependencies]
-python = ">=3.12.9,<3.13"
 snakemake = ">=9,<10"
 python-htcondor = ">=24.5.1,<25"
 snakemake-executor-plugin-htcondor = ">=0.2.1,<0.3"
